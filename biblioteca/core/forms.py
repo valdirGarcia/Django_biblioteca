@@ -12,16 +12,16 @@ def validate_autor(value):
         raise ValidationError('Deve ter pelo menos 10 caracteres')
     
 def validate_isbn(value):
-    if len(value) != 13:
-        raise ValidationError('Deve ter exatos 13 caracteres númericos')
-    
+    if not value.isdigit() or len(value) != 13:
+        raise ValidationError('O ISBN deve ter exatamente 13 dígitos numéricos')
+
 def validate_numero_paginas(value):
-    if len(value) < 3:
-        raise ValidationError('Deve pelo menors 3 caraccteres númericos')
-    
+    if not value.isdigit() or len(value) < 3:
+        raise ValidationError('O número de páginas deve ser um valor numérico maior ou igual a 3')
+
 def validate_ano_escrita(value):
-    if len(value) != 4:
-        raise ValidationError('Deve ter exatos 4 caracteres númericos')
+    if not value.isdigit() or len(value) != 4:
+        raise ValidationError('O ano de escrita deve ter exatamente 4 dígitos numéricos')
 
 
 
