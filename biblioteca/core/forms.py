@@ -3,9 +3,27 @@ from django.core.exceptions import ValidationError
 from core.models import LivroModel
 
 
-def validate_title(value):
+def validate_titulo_e_editora(value):
+    if len(value) < 3:
+        raise ValidationError('Deve ter pelo menos três caracteres')
+    
+def validate_autor(value):
     if len(value) < 10:
-        raise ValidationError('Deve ter pelo menos dez caracteres')
+        raise ValidationError('Deve ter pelo menos 10 caracteres')
+    
+def validate_isbn(value):
+    if len(value) != 13:
+        raise ValidationError('Deve ter exatos 13 caracteres númericos')
+    
+def validate_numero_paginas(value):
+    if len(value) < 3:
+        raise ValidationError('Deve pelo menors 3 caraccteres númericos')
+    
+def validate_ano_escrita(value):
+    if len(value) != 4:
+        raise ValidationError('Deve ter exatos 4 caracteres númericos')
+
+
 
 
 class LivroForm(forms.ModelForm):
@@ -35,32 +53,32 @@ class LivroForm(forms.ModelForm):
 
     def clean_titulo(self):
         titulo = self.cleaned_data['titulo']
-        validate_title(titulo)
+        validate_titulo_e_editora(titulo)
         return titulo
 
     def clean_editora(self):
         editora = self.cleaned_data['editora']
-        validate_title(editora)
+        validate_titulo_e_editora(editora)
         return editora
 
     def clean_autor(self):
         autor = self.cleaned_data['autor']
-        # Adicione 
+        validate_autor(autor)
         return autor
 
     def clean_isbn(self):
         isbn = self.cleaned_data['isbn']
-        # Adicione
+        validate_isbn(isbn)
         return isbn
 
     def clean_numero_paginas(self):
         numero_paginas = self.cleaned_data['numero_paginas']
-        # Adicione 
+        validate_numero_paginas(numero_paginas)
         return numero_paginas
 
     def clean_ano_escrita(self):
         ano_escrita = self.cleaned_data['ano_escrita']
-        # Adicione 
+        validate_ano_escrita(ano_escrita)
         return ano_escrita
 
     def clean(self):
