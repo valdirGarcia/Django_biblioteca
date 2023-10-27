@@ -16,8 +16,8 @@ def validate_isbn(value):
         raise ValidationError('O ISBN deve ter exatamente 13 dígitos numéricos')
 
 def validate_numero_paginas(value):
-    if not value.isdigit() or len(value) < 3:
-        raise ValidationError('O número de páginas deve ser um valor numérico maior ou igual a 3')
+    if not value.isdigit() or len(value) < 3 or int(value) == 0:
+        raise ValidationError('O número de páginas deve ser um valor numérico entre 1 e 999')
 
 def validate_ano_escrita(value):
     if not value.isdigit() or len(value) != 4:

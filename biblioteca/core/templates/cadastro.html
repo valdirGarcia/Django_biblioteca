@@ -10,8 +10,8 @@
     </head>
     <body>
         <br>
-            <h1> Biblioteca </h1>
-            <h2> Cadastro de Livros </h2>
+        <h1> Biblioteca </h1>
+        <h2> Cadastro de Livros </h2>
         <br>
 
         <form action={% url 'core:cadastro' %} novalidate method="POST" enctype="multipart/form-data">
@@ -22,6 +22,22 @@
             <br>
             <h3>
                 {{ formulario_livro.editora.label }}: {{ formulario_livro.editora }}
+            </h3>
+            <br>
+            <h3>
+                {{ formulario_livro.autor.label }}: {{ formulario_livro.autor }}
+            </h3>
+            <br>
+            <h3>
+                {{ formulario_livro.isbn.label }}: {{ formulario_livro.isbn }}
+            </h3>
+            <br>
+            <h3>
+                {{ formulario_livro.numero_paginas.label }}: {{ formulario_livro.numero_paginas }}
+            </h3>
+            <br>
+            <h3>
+                {{ formulario_livro.ano_escrita.label }}: {{ formulario_livro.ano_escrita }}
             </h3>
             <br><br>
             <center>
@@ -42,5 +58,4 @@
             </form>
         </center>
     </body>
-
 </html>
