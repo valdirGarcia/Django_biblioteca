@@ -1,6 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from core.models import LivroModel
+from datetime import datetime
+
 
     
 def validate_titulo(value):
@@ -26,6 +28,10 @@ def validate_numero_paginas(value):
 def validate_ano_escrita(value):
     if not value.isdigit() or len(value) != 4:
         raise ValidationError('O ano da obra deve ter exatamente 4 dígitos numéricos')
+    
+    current_year = datetime.now().year
+    if int(value) > current_year:
+        raise ValidationError('O ano de escrita não pode ser posterior ao ano atual')
 
 
 

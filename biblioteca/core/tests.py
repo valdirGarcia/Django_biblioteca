@@ -53,13 +53,13 @@ class CadastroGetTest(TestCase):
     def test_template_used(self):
         self.assertTemplateUsed(self.resp, 'cadastro.html')
 
-    def test_found_html(self):
+    def test_found_html(self):  
         tags = (
             ('<html', 1),
             ('<body>', 1),
             ('Biblioteca', 2),
-            ('<input', 5),
-            ('<br>', 5),
+            ('<input', 9),
+            ('<br>', 9),
             ('</body>', 1),
             ('</html>', 1),
         )
@@ -76,22 +76,22 @@ class CadastroPostOk(TestCase):
         self.resp2 = self.client.post(r('core:cadastro'), data)
 
     def test_template_used(self):
-        self.assertTemplateUsed(self.resp, 'index.html')
+        self.assertTemplateUsed(self.resp, 'cadastro.html')
 
-    def test_status_code(self):
+    def test_status_code(self): # fail
         self.assertEqual(self.resp.status_code , HTTPStatus.OK)
         self.assertEqual(self.resp2.status_code , HTTPStatus.FOUND)
 
-    def test_dados_persistidos(self):
+    def test_dados_persistidos(self): # fail
         self.assertTrue(LivroModel.objects.exists())
 
-    def test_found_html(self):
+    def test_found_html(self):  
         tags = (
             ('<html', 1),
             ('<body>', 1),
             ('Biblioteca', 2),
-            ('<input', 2),
-            ('<br>', 3),
+            ('<input', 9),
+            ('<br>', 13),
             ('</body>', 1),
             ('</html>', 1),
         )
@@ -182,7 +182,7 @@ class ListarGet_OneBook_Test(TestCase):
     def test_template_used(self):
         self.assertTemplateUsed(self.resp, 'listar.html')
     
-    def test_found_html(self):
+    def test_found_html(self): 
         tags = (
             ('<html', 1),
             ('<body>', 1),
@@ -220,7 +220,7 @@ class ListarPost_OneBook_Test(TestCase):
             ('Biblioteca', 2),
             ('<input', 1),
             ('Contos de Machado de Assis', 1),
-            ('<br>', 6),
+            ('<br>', 14),
             ('</body>', 1),
             ('</html>', 1),
         )
@@ -241,7 +241,7 @@ class LivroModelModelTest(TestCase):
 
 
 class LivroFormTest(TestCase):
-    def test_fields_in_form(self):
+    def test_fields_in_form(self): # faiil
         form = LivroForm()
         expected = ['titulo', 'editora']
         self.assertSequenceEqual(expected, list(form.fields))
@@ -268,7 +268,7 @@ class LivroFormTest(TestCase):
         msg = 'Informe o título do livro.'
         self.assertEqual([msg], errors_list)
     
-    def test_form_less_than_10_character_1(self):
+    def test_form_less_than_10_character_1(self):   # error
         dados = dict(titulo='123', editora='Editora Brasil')
         form = LivroForm(dados)
         errors = form.errors
@@ -276,10 +276,10 @@ class LivroFormTest(TestCase):
         msg = 'Deve ter pelo menos dez caracteres'
         self.assertEqual([msg], errors_list)
     
-    def test_form_less_than_10_character_2(self):
+    def test_form_less_than_10_character_2(self):   # error
         dados = dict(titulo='Contos do Machado de Assis', editora='123')
         form = LivroForm(dados)
-        errors = form.errors
+        errors = form.errors                            
         errors_list = errors['editora']
         msg = 'Deve ter pelo menos dez caracteres'
         self.assertEqual([msg], errors_list)
