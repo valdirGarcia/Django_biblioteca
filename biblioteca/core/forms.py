@@ -11,24 +11,24 @@ def validate_titulo(value):
     
 def validate_editora(value):
     if len(value) < 3:
-        raise ValidationError(' editora deve ter pelo menos três caracteres')
+        raise ValidationError('editora deve ter pelo menos três caracteres')
     
 def validate_autor(value):
     if len(value) < 10:
-        raise ValidationError(' Autor deve ter pelo menos 10 caracteres')
+        raise ValidationError('Autor deve ter pelo menos 10 caracteres')
     
 def validate_isbn(value):
-    if not value.isdigit() or len(value) != 13:
-        raise ValidationError('O ISBN deve ter exatamente 13 dígitos numéricos')
+    if value < 1000000000000 or value > 9999999999999:
+        raise ValidationError('O ISBN deve ter exatamente 13 dígitos')
 
 def validate_numero_paginas(value):
-    if not value.isdigit() or len(value) > 3 or int(value) == 0:
-        raise ValidationError('O número de páginas deve ser um valor numérico entre 1 e 999')
+    if value < 1 or value > 999:
+        raise ValidationError('O número de páginas deve ser um valor entre 1 e 999')
 
 def validate_ano_escrita(value):
-    if not value.isdigit() or len(value) != 4:
-        raise ValidationError('O ano da obra deve ter exatamente 4 dígitos numéricos')
-    
+    if value < 1000 or value > 9999:
+        raise ValidationError('O ano da obra deve conter exatamente 4 dígitos numéricos')
+
     current_year = datetime.now().year
     if int(value) > current_year:
         raise ValidationError('O ano de escrita não pode ser posterior ao ano atual')

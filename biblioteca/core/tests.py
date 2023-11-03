@@ -70,19 +70,26 @@ class CadastroGetTest(TestCase):
 
 class CadastroPostOk(TestCase):
     def setUp(self):
-        data = {'titulo': 'Contos de Machado de Assis',
-                'editora': 'editora Brasil',}
+        data = {
+            'titulo': 'Contos de Machado de Assis',
+            'editora': 'editora Brasil',
+            'autor': 'Machado de Assis',  
+            'isbn': 1234567890123,    
+            'numero_paginas': 200,    
+            'ano_escrita': 1899      
+        }
+        
         self.resp = self.client.post(r('core:cadastro'), data, follow=True)
         self.resp2 = self.client.post(r('core:cadastro'), data)
 
     def test_template_used(self):
-        self.assertTemplateUsed(self.resp, 'cadastro.html')
+        self.assertTemplateUsed(self.resp, 'index.html')
 
-    def test_status_code(self): # fail
+    def test_status_code(self): 
         self.assertEqual(self.resp.status_code , HTTPStatus.OK)
-        self.assertEqual(self.resp2.status_code , HTTPStatus.FOUND)
+        self.assertEqual(self.resp2.status_code , HTTPStatus.OK)
 
-    def test_dados_persistidos(self): # fail
+    def test_dados_persistidos(self): 
         self.assertTrue(LivroModel.objects.exists())
 
     def test_found_html(self):  
@@ -90,8 +97,8 @@ class CadastroPostOk(TestCase):
             ('<html', 1),
             ('<body>', 1),
             ('Biblioteca', 2),
-            ('<input', 9),
-            ('<br>', 13),
+            ('<input', 2),
+            ('<br>', 3),
             ('</body>', 1),
             ('</html>', 1),
         )
@@ -172,7 +179,12 @@ class ListarGet_OneBook_Test(TestCase):
     def setUp(self):
         self.livro = LivroModel(
             titulo='Contos de Machado de Assis',
-            editora='editora Brasil',)
+            editora='Editora Brasil',
+            autor='Machado de Assis',
+            isbn='1234567890123',
+            numero_paginas=200,
+            ano_escrita=1899
+        )
         self.livro.save()
         self.resp = self.client.get(r('core:listar'), follow=True)
 
@@ -202,7 +214,12 @@ class ListarPost_OneBook_Test(TestCase):
     def setUp(self):
         self.livro = LivroModel(
             titulo='Contos de Machado de Assis',
-            editora='editora Brasil',)
+            editora='editora Brasil',
+            autor='Machado de Assis',
+            isbn='1234567890123',
+            numero_paginas=200,
+            ano_escrita=1899
+        )
         self.livro.save()
         data = {'livro_id': self.livro.pk}
         self.resp = self.client.post(r('core:listar'), data)
@@ -233,7 +250,12 @@ class LivroModelModelTest(TestCase):
     def setUp(self):
         self.livro = LivroModel(
             titulo='Contos de Machado de Assis',
-            editora='editora Brasil',)
+            editora='editora Brasil',
+            autor='Machado de Assis',
+            isbn='1234567890123',
+            numero_paginas=200,
+            ano_escrita=1899
+        )
         self.livro.save()
 
     def test_created(self):
@@ -241,13 +263,21 @@ class LivroModelModelTest(TestCase):
 
 
 class LivroFormTest(TestCase):
-    def test_fields_in_form(self): # faiil
+    def test_fields_in_form(self):
         form = LivroForm()
-        expected = ['titulo', 'editora']
+        expected = ['titulo', 'editora', 'autor', 'isbn', 'numero_paginas', 'ano_escrita']
         self.assertSequenceEqual(expected, list(form.fields))
     
+    
     def test_form_all_OK(self):
-        dados = dict(titulo='Contos do Machado de Assis', editora='Editora Brasil')
+        dados = {
+            'titulo': 'Contos do Machado de Assis',
+            'editora': 'Editora Brasil',
+            'autor': 'Machado de Assis',
+            'isbn': '1234567890123',
+            'numero_paginas': '200',
+            'ano_escrita': '1880'
+        }
         form = LivroForm(dados)
         errors = form.errors
         self.assertEqual({}, errors)
@@ -267,20 +297,100 @@ class LivroFormTest(TestCase):
         errors_list = errors['titulo']
         msg = 'Informe o título do livro.'
         self.assertEqual([msg], errors_list)
+
+    def test_form_without_data_3(self):
+        dados = dict(editora='Editora Brasil')
+        form = LivroForm(dados)
+        errors = form.errors
+        errors_list = errors['isbn']
+        msg = 'Informe o ISBN do livro.'
+        self.assertEqual([msg], errors_list)
+
+    def test_form_without_data_4(self):
+        dados = dict(editora='Editora Brasil')
+        form = LivroForm(dados)
+        errors = form.errors
+        errors_list = errors['numero_paginas']
+        msg = 'Informe o número de páginas do livro.'
+        self.assertEqual([msg], errors_list)
+
+    def test_form_without_data_5(self):
+        dados = dict(editora='Editora Brasil')
+        form = LivroForm(dados)
+        errors = form.errors
+        errors_list = errors['ano_escrita']
+        msg = 'Informe o ano de escrita do livro.'
+        self.assertEqual([msg], errors_list)
+
+    def test_form_without_data_6(self):
+        dados = dict(editora='Editora Brasil')
+        form = LivroForm(dados)
+        errors = form.errors
+        errors_list = errors['autor']
+        msg = 'Informe o autor do livro.'
+        self.assertEqual([msg], errors_list)
     
-    def test_form_less_than_10_character_1(self):   # error
-        dados = dict(titulo='123', editora='Editora Brasil')
+    def test_form_less_than_3_character_1(self):   
+        dados = dict(titulo='12', editora='Editora Brasil')
         form = LivroForm(dados)
         errors = form.errors
         errors_list = errors['titulo']
-        msg = 'Deve ter pelo menos dez caracteres'
+        msg = 'título deve ter pelo menos três caracteres'
         self.assertEqual([msg], errors_list)
     
-    def test_form_less_than_10_character_2(self):   # error
-        dados = dict(titulo='Contos do Machado de Assis', editora='123')
+    def test_form_less_than_3_character_2(self):  
+        dados = dict(titulo='Contos do Machado de Assis', editora='12')
         form = LivroForm(dados)
         errors = form.errors                            
         errors_list = errors['editora']
-        msg = 'Deve ter pelo menos dez caracteres'
+        msg = 'editora deve ter pelo menos três caracteres'
         self.assertEqual([msg], errors_list)
+
+    def test_form_less_than_10_character(self):  
+        dados = dict(autor='valdir')
+        form = LivroForm(dados)
+        errors = form.errors                            
+        errors_list = errors['autor']
+        msg = 'Autor deve ter pelo menos 10 caracteres'
+        self.assertEqual([msg], errors_list)
+
+    def test_form_less_than_13_numbers(self):  
+        dados = dict(isbn='123456789')
+        form = LivroForm(dados)
+        errors = form.errors                            
+        errors_list = errors['isbn']
+        msg = 'O ISBN deve ter exatamente 13 dígitos'
+        self.assertEqual([msg], errors_list)
+
+    def test_form_less_than_3_numbers(self):  
+        dados = dict(numero_paginas='1000')
+        form = LivroForm(dados)
+        errors = form.errors                            
+        errors_list = errors['numero_paginas']
+        msg = 'O número de páginas deve ser um valor entre 1 e 999'
+        self.assertEqual([msg], errors_list)
+
+    def test_form_less_than_4_numbers(self):  
+        dados = dict(ano_escrita='12345')
+        form = LivroForm(dados)
+        errors = form.errors                            
+        errors_list = errors['ano_escrita']
+        msg = 'O ano da obra deve conter exatamente 4 dígitos numéricos'
+        self.assertEqual([msg], errors_list)
+
+    def test_current_year(self):  
+        dados = dict(ano_escrita='3000')
+        form = LivroForm(dados)
+        errors = form.errors                            
+        errors_list = errors['ano_escrita']
+        msg = 'O ano de escrita não pode ser posterior ao ano atual'
+        self.assertEqual([msg], errors_list)
+
+
+    
+
+
+    
+
+    
 
