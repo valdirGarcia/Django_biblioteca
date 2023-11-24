@@ -386,9 +386,8 @@ class LivroFormTest(TestCase):
         msg = 'O ano de escrita não pode ser posterior ao ano atual'
         self.assertEqual([msg], errors_list)
 
-
-    
-
+    class test_delete(TestCase):
+        print ("oi")
 
     
 

@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 from .forms import LivroForm
 from .models import LivroModel
+from django.shortcuts import get_object_or_404
 
 def index(request):
     if request.method == 'GET':
@@ -35,3 +36,15 @@ def listar(request):
         livros = LivroModel.objects.all()
         contexto = {'livros': livros}
         return render(request, 'listar.html', contexto)
+
+def deletar(request):
+    if request.method == 'POST':
+        livro_id = request.POST.get('livro_id')
+        livro = LivroModel.objects.get(pk=livro_id)
+        livro.delete()
+        return render(request, 'index.html')
+
+    
+
+def atualizar(request):
+    return

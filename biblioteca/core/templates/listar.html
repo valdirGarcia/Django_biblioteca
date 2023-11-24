@@ -23,6 +23,13 @@
                     <input type="hidden" name="livro_id" value={{ livro.pk }}>        
                     <input type="submit" value="Detalhes"/>              
                 </form>
+
+                <form action={% url 'core:deletar' %} novalidate method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}         
+                    <input type="hidden" name="livro_id" value={{ livro.pk }}>        
+                    <input type="submit" value="Deletar"/>              
+                </form>
+
             {% endfor %}
         {% else %}
             <h2> Nenhum livro cadastrado </h2>      
