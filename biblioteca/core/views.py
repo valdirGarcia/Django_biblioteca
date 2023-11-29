@@ -47,14 +47,14 @@ def deletar(request):
 def atualizar(request):
     if request.method == 'POST':
         livro_id = request.POST.get('livro_id')
-        livro = LivroModel.objects.get(id = id)
+        livro = LivroModel.objects.get(id=livro_id)
         form_livro = LivroForm(request.POST, instance=livro)
         if form_livro.is_valid():
-            livro.save()
+            form_livro.save()
             return HttpResponseRedirect(reverse('core:index'))
         else:
             contexto = {'formulario_livro': form_livro}
-            return redirect(request, "atualizar.html")      
+            return render(request, "atualizar.html", contexto)      
     else: 
         contexto = {'formulario_livro': LivroForm()}
         return render(request, 'atualizar.html', contexto)
