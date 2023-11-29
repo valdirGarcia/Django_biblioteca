@@ -2,7 +2,7 @@
 <html lang="pt-br">
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE-edge">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="author" content="Orlando Saraiva do Nascimento Júnior">
         <link rel="stylesheet" href="{% static '/css/style.css' %}">
@@ -11,30 +11,24 @@
     <body>
         <br>
         <h1> Biblioteca </h1>
+        <h2> Atualização de livros </h2>
         <br>
 
-        {% if livro %}
-            <h2> Detalhes de um livro selecionado </h2>
+        <form action={% url 'core:atualizar' %} novalidate method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
             <h3>
-                id: {{ livro.id}}
-                <br><br>
-                Livro: {{ livro.titulo }}
-                <br><br>
-                Editora: {{ livro.editora }}
-                <br><br>
-                Autor: {{ livro.autor }}
-                <br><br>
-                ISBN: {{ livro.isbn }}
-                <br><br>
-                Número de Páginas: {{ livro.numero_paginas }}
-                <br><br>
-                Ano de Escrita: {{ livro.ano_escrita }}
+                {{ formulario_livro.editora.label }}: {{ formulario_livro.editora }}
+            </h3>
+            <br>
+            <h3>
+                {{ formulario_livro.numero_paginas.label }}: {{ formulario_livro.numero_paginas }}
             </h3>
             <br><br>
-        {% else %}
-            <h2> Nenhum livro cadastrado </h2>
-        {% endif %}
-
+            <center>
+                <input type="submit" value="Atualizar"/>
+            </center>
+        </form>
+        <br>
         <center>
             <form action={% url 'core:listar' %} novalidate method="GET">
                 <input type="submit" value="Voltar"/>              

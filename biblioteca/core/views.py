@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import redirect, render, HttpResponseRedirect
 from django.urls import reverse
 from .forms import LivroForm
 from .models import LivroModel
@@ -44,7 +44,17 @@ def deletar(request):
         livro.delete()
         return render(request, 'index.html')
 
-    
-
 def atualizar(request):
-    return
+    if request.method == 'POST':
+        livro_id = request.POST.get('livro_id')
+        livro = LivroModel.objects.get(id = id)
+        form_livro = LivroForm(request.POST, instance=livro)
+        if form_livro.is_valid():
+            livro.save()
+            return HttpResponseRedirect(reverse('core:index'))
+        else:
+            contexto = {'formulario_livro': form_livro}
+            return redirect(request, "atualizar.html")      
+    else: 
+        contexto = {'formulario_livro': LivroForm()}
+        return render(request, 'atualizar.html', contexto)

@@ -30,6 +30,13 @@
                     <input type="submit" value="Deletar"/>              
                 </form>
 
+                
+                <form action={% url 'core:atualizar' %} novalidate method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}                
+                    <input type="submit" value="atualizar"/>              
+                </form>
+
+
             {% endfor %}
         {% else %}
             <h2> Nenhum livro cadastrado </h2>      
