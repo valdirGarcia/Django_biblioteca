@@ -47,7 +47,7 @@ def deletar(request):
 def atualizar(request):
     if request.method == 'POST':
         livro_id = request.POST.get('livro_id')
-        livro = LivroModel.objects.get(id=livro_id)
+        livro = LivroModel.objects.get(pk=livro_id)
         form_livro = LivroForm(request.POST, instance=livro)
         if form_livro.is_valid():
             form_livro.save()

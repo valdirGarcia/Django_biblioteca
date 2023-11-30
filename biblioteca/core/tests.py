@@ -3,6 +3,7 @@ from django.shortcuts import resolve_url as r
 from http import HTTPStatus
 from .models import LivroModel
 from .forms import LivroForm
+from django.urls import reverse
 
 
 class IndexGetTest(TestCase):
@@ -199,7 +200,7 @@ class ListarGet_OneBook_Test(TestCase):
             ('<html', 1),
             ('<body>', 1),
             ('Biblioteca', 2),
-            ('<input', 4),
+            ('<input', 10),
             ('Contos de Machado de Assis', 1),
             ('<br>', 2),
             ('</body>', 1),
@@ -237,7 +238,7 @@ class ListarPost_OneBook_Test(TestCase):
             ('Biblioteca', 2),
             ('<input', 1),
             ('Contos de Machado de Assis', 1),
-            ('<br>', 14),
+            ('<br>', 16),
             ('</body>', 1),
             ('</html>', 1),
         )
@@ -386,10 +387,62 @@ class LivroFormTest(TestCase):
         msg = 'O ano de escrita não pode ser posterior ao ano atual'
         self.assertEqual([msg], errors_list)
 
-    class test_delete(TestCase):
-        print ("oi")
 
+class LivroDeletarTest(TestCase):
+    def setUp(self):
+        self.livro = LivroModel(
+            titulo='Contos de Machado de Assis',
+            editora='editora Brasil',
+            autor='Machado de Assis',
+            isbn='1234567890123',
+            numero_paginas=200,
+            ano_escrita=1899
+        )
+        self.livro.save()  
+        data = {'livro_id': self.livro.pk}
+        self.resp = self.client.post(r('core:deletar'), data)
+
+    def test_status_code(self):
+        self.assertEqual(self.resp.status_code , HTTPStatus.OK)
+
+    def test_livro_excluido_do_banco(self):
+        livro_exists = LivroModel.objects.filter(pk=self.livro.pk).exists()
+        self.assertFalse(livro_exists)  
     
 
-    
+class LivroAtualizarTest(TestCase):
+    def setUp(self):
+        self.livro = LivroModel(
+            titulo='Contos de Machado de Assis',
+            editora='editora Brasil',
+            autor='Machado de Assis',
+            isbn='1234567890123',
+            numero_paginas=200,
+            ano_escrita=1899
+        )
+        self.livro.save()  
 
+        data = {
+            'livro_id': self.livro.pk,
+            'titulo': 'Novo Título',
+            'editora': 'Nova Editora',
+            'autor': 'Novo Autor',
+            'isbn': '9876543210987',
+            'numero_paginas': 250,
+            'ano_escrita': 1900
+        }
+        self.resp = self.client.post(reverse('core:atualizar'), data)
+
+    def test_status_code(self):
+         self.assertEqual(self.resp.status_code, HTTPStatus.OK)
+
+    def test_livro_atualizado_no_banco(self):
+        self.livro.refresh_from_db()
+        self.assertEqual(self.livro.titulo, 'Novo Título')
+        self.assertEqual(self.livro.editora, 'Nova Editora')
+        self.assertEqual(self.livro.autor, 'Novo Autor')
+        self.assertEqual(str(self.livro.isbn), '9876543210987')  
+        self.assertEqual(self.livro.numero_paginas, 250)
+        self.assertEqual(self.livro.ano_escrita, 1900)
+
+    
