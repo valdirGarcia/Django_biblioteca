@@ -9,19 +9,30 @@
         <title>Biblioteca</title>
     </head>
     <body>
+        <br>
+        <h1> Biblioteca </h1>
+        <h2> Atualização de livros ??</h2>
+        <br>
 
-        <h2>Atualização de livros</h2>
-      
-        <form action={% url 'core:atualizar' %} novalidate method="POST" enctype="multipart/form-data"></form>
+        <form action={% url 'core:atualizar' %} novalidate method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <label for="{{ form.id.id_for_label }}">ID:</label>
-            {{ form.id }}
+            <h3>
+                {{ formulario_livro.titulo.label }} : {{ formulario_livro.titulo }}
+            </h3>
             <br>
-            <label for="{{ form.editora.id_for_label }}">Editora:</label>
-            {{ form.editora }}
-            <br>
-            <input type="submit" value="Enviar">
+            <h3>
+                {{ formulario_livro.editora.label }}: {{ formulario_livro.editora }}
+            </h3>
+            <br><br>
+            <center>
+                <input type="submit" value="Atualizar"/>
+            </center>
         </form>
-      
-      </body>
+        <br>
+        <center>
+            <form action={% url 'core:listar' %} novalidate method="GET">
+                <input type="submit" value="Voltar"/>              
+            </form>
+        </center>
+    </body>
 </html>

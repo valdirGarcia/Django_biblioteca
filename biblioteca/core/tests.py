@@ -431,7 +431,7 @@ class LivroAtualizarTest(TestCase):
             'numero_paginas': 250,
             'ano_escrita': 1900
         }
-        self.resp = self.client.post(reverse('core:atualizar'), data)
+        self.resp = self.client.post(reverse('core:atualizar'), data,follow=True)
 
     def test_status_code(self):
          self.assertEqual(self.resp.status_code, HTTPStatus.OK)
